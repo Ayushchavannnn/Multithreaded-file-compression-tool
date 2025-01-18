@@ -14,3 +14,5 @@
 **DESCRIPTION OF TASK PERFORMED**: This C++ project implements a file compression and decompression tool using Run-Length Encoding (RLE). It compresses an input file by replacing repeated characters with the character and its count, saving the result as a .rle file, and decompresses .rle files back to their original form.
 
 **OUTPUT**: 
+
+![Image](https://github.com/user-attachments/assets/2d409ccd-e695-4256-8b51-6020d3259e58)
