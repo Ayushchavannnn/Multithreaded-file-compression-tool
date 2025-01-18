@@ -1,68 +1,64 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
 
-// Function to compress a file using Run-Length Encoding (RLE)
-bool compress_file(const std::string& input_filename, const std::string& output_filename) {
-    std::ifstream input(input_filename, std::ios::binary);
+using namespace std;
+
+bool compressFile(const string& inputFile, const string& outputFile) {
+    ifstream input(inputFile, ios::binary);
     if (!input) {
-        std::cerr << "Error opening input file!" << std::endl;
+        cerr << "Could not open input file!" << endl;
         return false;
     }
 
-    std::ofstream output(output_filename, std::ios::binary);
+    ofstream output(outputFile, ios::binary);
     if (!output) {
-        std::cerr << "Error opening output file!" << std::endl;
+        cerr << "Could not create output file!" << endl;
         return false;
     }
 
-    char current_char, previous_char;
+    char currentChar, prevChar;
     int count = 1;
 
-    input.get(previous_char); // Read the first character
+    input.get(prevChar); 
 
-    while (input.get(current_char)) {
-        if (current_char == previous_char) {
-            count++; // If the character is the same, increment the count
+    while (input.get(currentChar)) {
+        if (currentChar == prevChar) {
+            count++;
         } else {
-            // Write the previous character and its count to the output file
-            output.put(previous_char);
+            output.put(prevChar);
             output.write(reinterpret_cast<char*>(&count), sizeof(count));
-            count = 1; // Reset count for the new character
+            count = 1;
         }
-        previous_char = current_char;
+        prevChar = currentChar;
     }
 
-    // Write the last character and its count
-    output.put(previous_char);
+    output.put(prevChar);
     output.write(reinterpret_cast<char*>(&count), sizeof(count));
 
     return true;
 }
 
-// Function to decompress a file using Run-Length Encoding (RLE)
-bool decompress_file(const std::string& input_filename, const std::string& output_filename) {
-    std::ifstream input(input_filename, std::ios::binary);
+bool decompressFile(const string& inputFile, const string& outputFile) {
+    ifstream input(inputFile, ios::binary);
     if (!input) {
-        std::cerr << "Error opening input file!" << std::endl;
+        cerr << "Could not open input file for decompression!" << endl;
         return false;
     }
 
-    std::ofstream output(output_filename, std::ios::binary);
+    ofstream output(outputFile, ios::binary);
     if (!output) {
-        std::cerr << "Error opening output file!" << std::endl;
+        cerr << "Could not create output file for decompression!" << endl;
         return false;
     }
 
-    char current_char;
+    char currentChar;
     int count;
 
-    while (input.get(current_char)) {
+    while (input.get(currentChar)) {
         input.read(reinterpret_cast<char*>(&count), sizeof(count));
-        // Write the character `count` times to the output file
         for (int i = 0; i < count; i++) {
-            output.put(current_char);
+            output.put(currentChar);
         }
     }
 
@@ -70,26 +66,27 @@ bool decompress_file(const std::string& input_filename, const std::string& outpu
 }
 
 int main() {
-    std::string input_filename = "input.txt";   // The file to be compressed
-    std::string compressed_filename = "output.rle";  // Compressed file
-    std::string decompressed_filename = "decompressed.txt"; // Decompressed file
+    string inputFile = "input.txt";
+    string compressedFile = "output.rle";
+    string decompressedFile = "decompressed.txt";
 
-    std::cout << "Compressing file: " << input_filename << std::endl;
-    if (compress_file(input_filename, compressed_filename)) {
-        std::cout << "File compressed successfully!" << std::endl;
+    cout << "Starting compression of: " << inputFile << endl;
+    if (compressFile(inputFile, compressedFile)) {
+        cout << "Compression successful!" << endl;
     } else {
-        std::cerr << "Compression failed!" << std::endl;
+        cerr << "Compression failed!" << endl;
     }
 
-    std::cout << "Decompressing file: " << compressed_filename << std::endl;
-    if (decompress_file(compressed_filename, decompressed_filename)) {
-        std::cout << "File decompressed successfully!" << std::endl;
+    cout << "Starting decompression of: " << compressedFile << endl;
+    if (decompressFile(compressedFile, decompressedFile)) {
+        cout << "Decompression successful!" << endl;
     } else {
-        std::cerr << "Decompression failed!" << std::endl;
+        cerr << "Decompression failed!" << endl;
     }
 
     return 0;
 }
+
 
 
 
